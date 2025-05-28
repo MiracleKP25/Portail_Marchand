@@ -1,0 +1,20 @@
+@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.input {
+  @apply w-full p-2 rounded-md border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500;
+}
+.btn-green {
+  @apply bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-md transition duration-200;
+}
+.btn-outline {
+  @apply border border-emerald-600 text-emerald-700 px-4 py-2 rounded-md hover:bg-emerald-50;
+}
+
+body {
+  @apply bg-emerald-50 text-slate-900;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}

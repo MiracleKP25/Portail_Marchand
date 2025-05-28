@@ -1,6 +1,6 @@
 <?php
 class App {
-    protected $controller = 'VendeurController';
+    protected $controller = 'AccueilController';
     protected $method = 'index';
     protected $params = [];
 

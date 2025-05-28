@@ -113,5 +113,10 @@ class VendeurController
             echo json_encode(['success' => false, 'error' => 'Aucun vendeur trouvé avec cet email.']);
         }
     }
+
+    public function index() {
+    echo json_encode(['message' => 'Bienvenue sur l’API vendeur']);
+}
+
 }
 ?>

@@ -8,6 +8,10 @@ class AdminController extends Controller {
         $this->vendeurModel = $this->model('Vendeur');
     }
 
+    public function index() {
+    echo json_encode(['message' => 'Bienvenue admin']);
+}
+
     // POST /admin/login
     public function login() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {

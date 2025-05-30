@@ -15,6 +15,7 @@ class Vendeur
     public $valeur;
     public $statut;
 
+
     public function save()
     {
         $pdo = Database::getConnection();
@@ -56,6 +57,24 @@ class Vendeur
         return $vendeur ?: null;
     }
 
+    public function getAll()
+    {
+        $pdo = Database::getConnection(); // ← Connexion DB correcte
+        $sql = "SELECT * FROM vendeurs"; 
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function updateStatus($id, $statut)
+    {
+        $pdo = Database::getConnection(); // ← Connexion DB correcte
+        $stmt = $pdo->prepare("UPDATE vendeurs SET statut = :statut WHERE id = :id");
+        return $stmt->execute([
+            'statut' => $statut,
+            'id' => $id
+        ]);
+    }
 
 }
 ?>

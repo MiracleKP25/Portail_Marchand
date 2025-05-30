@@ -116,7 +116,50 @@ class VendeurController
 
     public function index() {
     echo json_encode(['message' => 'Bienvenue sur l’API vendeur']);
-}
+    }
+
+    public function getAllVendors()
+    {
+        header("Access-Control-Allow-Origin: *");
+        header("Content-Type: application/json");
+
+        $vendeurModel = new Vendeur();
+        $vendeurs = $vendeurModel->getAll();
+
+        echo json_encode([
+            'success' => true,
+            'data' => $vendeurs
+        ]);
+
+        exit;
+    }
+
+
+    public function updateStatus()
+    {
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Headers: Content-Type");
+        header("Access-Control-Allow-Methods: POST");
+        header("Content-Type: application/json");
+
+        $data = json_decode(file_get_contents("php://input"), true);
+
+        if (!isset($data['id']) || !isset($data['statut'])) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'ID et statut requis']);
+            return;
+        }
+
+        $vendeurModel = new Vendeur();
+        $success = $vendeurModel->updateStatus($data['id'], $data['statut']);
+
+        if ($success) {
+            echo json_encode(['success' => true]);
+        } else {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'error' => "Échec de la mise à jour"]);
+        }
+    }
 
 }
 ?>

@@ -1,64 +1,75 @@
 <?php
-class AdminController extends Controller {
+
+require_once __DIR__ . '/../models/AdminModel.php';
+class AdminController {
+
+    
     private $adminModel;
-    private $vendeurModel;
 
     public function __construct() {
-        $this->adminModel = $this->model('Admin');
-        $this->vendeurModel = $this->model('Vendeur');
+        $this->adminModel = new AdminModel();
     }
 
-    public function index() {
-    echo json_encode(['message' => 'Bienvenue admin']);
-}
+    public function createAdmin() {
+    header("Access-Control-Allow-Origin: *");
+    header("Access-Control-Allow-Headers: Content-Type");
+    header("Content-Type: application/json");
 
-    // POST /admin/login
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    $email = $data['email'] ?? '';
+    $password = $data['password'] ?? '';
+
+    // Hashage du mot de passe
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+    // Enregistrement via le modèle
+    $result = $this->adminModel->createAdmin($email, $hashedPassword);
+
+    if ($result) {
+        echo json_encode([
+            "success" => true,
+            "message" => "Admin créé avec succès"
+        ]);
+    } else {
+        echo json_encode([
+            "success" => false,
+            "message" => "Échec lors de la création de l'admin"
+        ]);
+    }
+    }
+
+
     public function login() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email = $_POST['email'];
-            $password = $_POST['mot_de_passe'];
+        // Autoriser les requêtes CORS
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Headers: Content-Type");
+        header("Content-Type: application/json");
 
-            $admin = $this->adminModel->getByEmail($email);
+        // Lire les données JSON envoyées par le frontend
+        $data = json_decode(file_get_contents("php://input"), true);
 
-            if ($admin && password_verify($password, $admin['mot_de_passe'])) {
-                $_SESSION['admin'] = $admin['email'];
-                echo json_encode(['success' => true]);
-            } else {
-                echo json_encode(['success' => false]);
-            }
+        $email = $data['email'] ?? '';
+        $password = $data['password'] ?? '';
+
+        // Récupérer l'admin par email
+        $admin = $this->adminModel->getAdminByEmail($email);
+
+        // Vérification du mot de passe
+        if ($admin && password_verify($password, $admin['password'])) {
+            session_start();
+            $_SESSION['admin'] = $admin['id'];
+
+            echo json_encode([
+                "success" => true,
+                "message" => "Connexion réussie"
+            ]);
+        } else {
+            echo json_encode([
+                "success" => false,
+                "message" => "Email ou mot de passe invalide"
+            ]);
         }
-    }
-
-    // GET /admin/vendeurs
-    public function vendeurs() {
-        if (!isset($_SESSION['admin'])) {
-            http_response_code(401);
-            echo json_encode(['erreur' => 'non_connecte']);
-            return;
-        }
-
-        echo json_encode($this->vendeurModel->getAll());
-    }
-
-    // POST /admin/statut/5
-    public function statut($id) {
-        if (!isset($_SESSION['admin'])) {
-            http_response_code(401);
-            echo json_encode(['erreur' => 'non_connecte']);
-            return;
-        }
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $statut = $_POST['statut'];
-            $ok = $this->vendeurModel->changerStatut($id, $statut);
-            echo json_encode(['success' => $ok]);
-        }
-    }
-
-    // Déconnexion
-    public function logout() {
-        session_destroy();
-        echo json_encode(['success' => true]);
     }
 }
 ?>

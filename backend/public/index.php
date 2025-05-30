@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 // Gérer les requêtes préflight (OPTIONS)
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -11,52 +14,50 @@ require_once './core/App.php';
 require_once './core/Controller.php';
 require_once './core/Model.php';
 
+$url = isset($_GET['url']) ? $_GET['url'] : '';
+
 // Instanciation de l'application
-$app = new App();
+// $app = new App();
 
 // Route POST /vendeur/store
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['url']) && $_GET['url'] === 'vendeur/store') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $url === 'vendeur/store') {
     require_once './app/controllers/VendeurController.php';
     $controller = new VendeurController();
     $controller->store();
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['url'] === 'vendeur/allvendors') {
+    require_once './app/controllers/VendeurController.php';
+    $controller = new VendeurController();
+    $controller->getAllVendors();
+}
+
 // Route GET /vendeur/status
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['url']) && $_GET['url'] === 'vendeur/status') {
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && $url === 'vendeur/status') {
     require_once './app/controllers/VendeurController.php';
     $controller = new VendeurController();
     $controller->getStatusByEmail();
 }
 
-// ✅ Route POST /admin/login
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['url']) && $_GET['url'] === 'admin/login') {
+// router.php
+if ($url == 'vendeur/updatestatus') {
+    $controller = new VendeurController();
+    $controller->updateStatus();
+    return;
+}
+
+
+// Route POST /admin/login
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $url === 'admin/login') {
     require_once './app/controllers/AdminController.php';
     $controller = new AdminController();
     $controller->login();
 }
 
-// ✅ Route GET /admin/vendeurs
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['url']) && $_GET['url'] === 'admin/vendeurs') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['url']) && $_GET['url'] === 'admin/create') {
     require_once './app/controllers/AdminController.php';
     $controller = new AdminController();
-    $controller->vendeurs();
+    $controller->createAdmin();
 }
-
-// ✅ Route POST /admin/statut/{id}
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['url']) && str_starts_with($_GET['url'], 'admin/statut/')) {
-    $id = intval(basename($_GET['url']));
-    require_once './app/controllers/AdminController.php';
-    $controller = new AdminController();
-    $controller->statut($id);
-}
-
-// ✅ Route GET /admin/logout
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['url']) && $_GET['url'] === 'admin/logout') {
-    require_once './app/controllers/AdminController.php';
-    $controller = new AdminController();
-    $controller->logout();
-}
-
-
 
 ?>

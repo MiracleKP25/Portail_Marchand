@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import NavComponent from './NavComponent.vue'
 
 const form = ref({
   nom: '',
@@ -64,7 +65,7 @@ const soumettre = async () => {
 </script>
 
 <template>
-
+<NavComponent/>
   <div class="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-2xl">
     <h2 class="text-2xl font-semibold text-emerald-700 mb-6">Formulaire d’adhésion vendeur</h2>
 

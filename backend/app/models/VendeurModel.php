@@ -2,7 +2,7 @@
 
 require_once './config/config.php';
 
-class Vendeur
+class VendeurModel
 {
     public $nom;
     public $prenom;

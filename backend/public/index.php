@@ -1,63 +1,71 @@
 <?php
+// Activation des erreurs
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Gérer les requêtes préflight (OPTIONS)
+// Autoriser CORS
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Content-Type: application/json");
+
+// Préflight
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
 }
 
-require_once './config/config.php';
-require_once './core/App.php';
-require_once './core/Controller.php';
-require_once './core/Model.php';
+// Charger la config
+require_once __DIR__ . '/../config/config.php';
 
-$url = isset($_GET['url']) ? $_GET['url'] : '';
+// Charger manuellement les fichiers nécessaires
+require_once __DIR__ . '/../app/controllers/VendeurController.php';
+require_once __DIR__ . '/../app/controllers/AdminController.php';
+require_once './app/models/VendeurModel.php';
 
-// Instanciation de l'application
-// $app = new App();
+require_once __DIR__ . '/../app/models/AdminModel.php';
 
-// Route POST /vendeur/store
+// Récupération de l'URL
+$url = $_GET['url'] ?? '';
+
+// Routes Vendeur
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $url === 'vendeur/store') {
-    require_once './app/controllers/VendeurController.php';
     $controller = new VendeurController();
     $controller->store();
+    exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['url'] === 'vendeur/allvendors') {
-    require_once './app/controllers/VendeurController.php';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $url === 'vendeur/allvendors') {
     $controller = new VendeurController();
     $controller->getAllVendors();
+    exit;
 }
 
-// Route GET /vendeur/status
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && $url === 'vendeur/status') {
-    require_once './app/controllers/VendeurController.php';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $url === 'vendeur/status') {
     $controller = new VendeurController();
     $controller->getStatusByEmail();
+    exit;
 }
 
-// router.php
-if ($url == 'vendeur/updatestatus') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $url === 'vendeur/updatestatus') {
     $controller = new VendeurController();
     $controller->updateStatus();
-    return;
+    exit;
 }
 
-
-// Route POST /admin/login
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $url === 'admin/login') {
-    require_once './app/controllers/AdminController.php';
-    $controller = new AdminController();
-    $controller->login();
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['url']) && $_GET['url'] === 'admin/create') {
-    require_once './app/controllers/AdminController.php';
+// Routes Admin
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $url === 'admin/create') {
     $controller = new AdminController();
     $controller->createAdmin();
+    exit;
 }
 
-?>
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $url === 'admin/login') {
+    $controller = new AdminController();
+    $controller->login();
+    exit;
+}
+
+// Si aucune route ne correspond
+http_response_code(404);
+echo json_encode(['success' => false, 'message' => 'Route inconnue']);

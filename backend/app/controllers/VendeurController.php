@@ -1,5 +1,5 @@
 <?php
-require_once './app/models/Vendeur.php';
+require_once './app/models/VendeurModel.php';
 
 class VendeurController
 {
@@ -33,7 +33,7 @@ class VendeurController
         // }
 
         // Création de l'objet vendeur
-        $vendeur = new Vendeur();
+        $vendeur = new VendeurModel();
         $vendeur->nom = htmlspecialchars($data['nom']);
         $vendeur->prenom = htmlspecialchars($data['prenom']);
         $vendeur->produits = htmlspecialchars($data['produits']);
@@ -62,28 +62,36 @@ class VendeurController
         header("Access-Control-Allow-Origin: *");
         header("Content-Type: application/json");
 
-        $donnees = json_decode(file_get_contents("php://input"), true);
-        $email = $donnees['email'] ?? null;
+        $input = file_get_contents("php://input");
+        $data = json_decode($input, true);
 
-        if (!$email) {
+        if (!isset($data['email'])) {
             http_response_code(400);
             echo json_encode(['success' => false, 'error' => "Email requis"]);
-            return;
+            exit;
         }
 
-        $vendeurModel = new Vendeur();
+        $email = $data['email'];
+        $vendeurModel = new VendeurModel();
         $vendeur = $vendeurModel->findByEmail($email);
 
         if ($vendeur) {
             echo json_encode([
                 'success' => true,
-                'statut' => $vendeur['statut']
+                'statut' => $vendeur['statut'],
             ]);
         } else {
             http_response_code(404);
-            echo json_encode(['success' => false, 'error' => "Vendeur non trouvé"]);
+            echo json_encode([
+                'success' => false,
+                'error' => "Aucun vendeur trouvé pour cet email"
+            ]);
         }
+
+        exit;
     }
+
+
 
     public function getStatusByEmail()
     {
@@ -98,7 +106,7 @@ class VendeurController
             return;
         }
 
-        $vendeurModel = new Vendeur();
+        $vendeurModel = new VendeurModel();
         $vendeur = $vendeurModel->findByEmail($data['email']);
 
         if ($vendeur) {
@@ -123,7 +131,7 @@ class VendeurController
         header("Access-Control-Allow-Origin: *");
         header("Content-Type: application/json");
 
-        $vendeurModel = new Vendeur();
+        $vendeurModel = new VendeurModel();
         $vendeurs = $vendeurModel->getAll();
 
         echo json_encode([
@@ -150,7 +158,7 @@ class VendeurController
             return;
         }
 
-        $vendeurModel = new Vendeur();
+        $vendeurModel = new VendeurModel();
         $success = $vendeurModel->updateStatus($data['id'], $data['statut']);
 
         if ($success) {

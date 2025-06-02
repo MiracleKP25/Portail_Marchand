@@ -5,12 +5,14 @@ import FormulaireVendeur from '@/components/FormulaireVendeur.vue'
 import LoginAdmin from '@/components/LoginAdmin.vue'
 import DashboardAdmin from '@/views/DashboardAdmin.vue'
 import HomeView from '@/views/HomeView.vue'
+import VendorHome from '@/views/VendorHome.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     // Vendeur public
     { path: '/vendeur', name: 'Accueil', component: AccueilView },
+    { path: '/vendeur/accueil', name: 'EspaceVendeur', component: VendorHome },
     { path: '/formulaire', name: 'Formulaire', component: FormulaireVendeur },
     { path: '/suivi', name: 'Suivi', component: SuivieView },
 
@@ -21,6 +23,7 @@ const router = createRouter({
 
     // Connexion admin
     { path: '/admin/login', component: LoginAdmin },
+
 
     // Dashboard protégé
     {

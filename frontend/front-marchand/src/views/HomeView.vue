@@ -17,10 +17,10 @@
           Rejoignez notre marché local et devenez vendeur dès aujourd’hui.
         </p>
         <router-link
-          to="/formulaire"
+          to="/vendeur/accueil"
           class="btn-green"
         >
-          Accéder au formulaire
+          Espace Vendeur
         </router-link>
       </div>
 

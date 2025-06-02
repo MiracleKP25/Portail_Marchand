@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from 'vue'
-import NavComponent from './NavComponent.vue'
 
 const email = ref('')
 const statut = ref(null)
@@ -40,7 +39,6 @@ const verifierStatut = async () => {
 </script>
 
 <template>
-  <NavComponent/>
   <div class="max-w-md mx-auto mt-16 px-6 py-8 bg-white shadow-2xl rounded-2xl transition-all duration-300">
     <h2 class="text-2xl font-bold text-emerald-700 mb-6 text-center">🔍 Suivi de votre demande</h2>
 

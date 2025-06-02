@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from 'vue'
-import NavComponent from './NavComponent.vue'
 
 // Référence du formulaire (reactive)
 const form = ref({
@@ -67,7 +66,6 @@ const soumettre = async () => {
 
 
 <template>
-  <NavComponent />
   <div class="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-xl rounded-2xl transition-all duration-500 ease-in-out animate-fade-in">
     <h2 class="text-3xl font-bold text-emerald-700 mb-6 tracking-wide">🛒 Formulaire d’adhésion vendeur</h2>
 
@@ -131,7 +129,7 @@ const soumettre = async () => {
       </div>
 
       <!-- Bouton Prévisualisation -->
-      <button type="submit" class="btn-green w-full mt-4 animate-bounce hover:scale-105 transition">
+      <button type="submit" class="btn-green w-full mt-4 hover:scale-105 transition">
         Prévisualiser
       </button>
     </form>

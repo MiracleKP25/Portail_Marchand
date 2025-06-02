@@ -1,3 +1,70 @@
+<script setup>
+import { ref } from 'vue'
+
+// Référence du formulaire (reactive)
+const form = ref({
+  nom: '',
+  prenom: '',
+  produits: '',
+  dejaVendu: '',
+  lieuVente: 'Non défini',
+  actifAilleurs: '',
+  email: '',
+  telephone: '',
+  valeur: '',
+})
+
+// État pour gérer la prévisualisation et la soumission
+const preview = ref(false)
+const submitted = ref(false)
+
+// Fonction appelée lors du clic sur "Soumettre"
+const soumettre = async () => {
+  try {
+    // Conversion Oui/Non en booléens pour la base
+    form.value.dejaVendu = form.value.dejaVendu === 'Oui' ? 1 : 0;
+    form.value.actifAilleurs = form.value.actifAilleurs === 'Oui' ? 1 : 0;
+
+    // Envoi vers backend
+    const response = await fetch("http://localhost:8000/router.php?url=vendeur/store", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify(form.value)
+    });
+
+    // Vérification réponse backend
+    if (!response.ok) throw new Error(`Erreur serveur : ${response.statusText}`);
+
+    const result = await response.json();
+    console.log("Réponse serveur :", result);
+
+    submitted.value = true;
+    preview.value = false;
+
+    // Réinitialisation du formulaire
+    form.value = {
+      nom: '',
+      prenom: '',
+      produits: '',
+      dejaVendu: '',
+      lieuVente: 'Non défini',
+      actifAilleurs: '',
+      email: '',
+      telephone: '',
+      valeur: '',
+    };
+
+  } catch (error) {
+    alert("Erreur lors de l'envoi : " + error.message);
+    console.error(error);
+  }
+}
+</script>
+
+
 <template>
   <div class="max-w-3xl mx-auto mt-10 p-8 bg-white shadow-2xl rounded-3xl transition-all duration-500 ease-in-out animate-fade-up">
     <h2 class="text-4xl font-extrabold text-emerald-700 mb-8 tracking-tight text-center">
@@ -99,3 +166,28 @@
     </transition>
   </div>
 </template>
+
+
+
+
+<style scoped>
+
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
